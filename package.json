@@ -7,7 +7,7 @@
     "start": "nodemon server.js",
     "test": "jest"
   },
-  "author": "kar",
+  "author": "PetrukKO",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
