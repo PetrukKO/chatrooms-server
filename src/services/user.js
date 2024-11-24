@@ -11,14 +11,14 @@ async function hashPassword(password) {
   return hashed_password;
 }
 
-async function comparePassword(input_password, hashed_password) {
+/* async function comparePassword(input_password, hashed_password) {
   const compared = await bcrypt
     .compare(input_password, hashed_password)
     .then((res) => {
       return res;
     });
   return compared;
-}
+} */
 
 async function createUser(login, password) {
   const hashed_password = await hashPassword(password);
@@ -39,5 +39,5 @@ module.exports = {
   createUser,
   findByLogin,
   hashPassword,
-  comparePassword,
+  /* comparePassword, */
 };

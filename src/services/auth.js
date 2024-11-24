@@ -2,7 +2,8 @@ const dotenv = require("dotenv");
 dotenv.config({ path: ".../config.env" });
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
-const users = require("../services/user");
+const userServices = require("../services/user");
+const bcrypt = require("bcrypt");
 
 //decodes token
 function decodeToken(token) {
@@ -13,14 +14,23 @@ function decodeToken(token) {
   }
 }
 
-//returns token or throws "incorrect login or password"
-async function authorize(login, password) {
-  const user = await User.findOne({ login }).exec();
-  const isCorrect = await users
-    .comparePassword(password, user.password)
+async function comparePassword(input_password, hashed_password) {
+  const compared = await bcrypt
+    .compare(input_password, hashed_password)
     .then((res) => {
       return res;
     });
+  return compared;
+}
+
+//returns token or throws "incorrect login or password"
+async function authorize(login, password) {
+  const user = await User.findOne({ login }).exec();
+  const isCorrect = await comparePassword(password, user.password).then(
+    (res) => {
+      return res;
+    }
+  );
   console.log(isCorrect);
   if (isCorrect) {
     const token = jwt.sign(

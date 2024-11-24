@@ -1,20 +1,10 @@
 const Room = require("../models/roomModel");
 const Message = require("../models/messageModel");
+const User = require("../models/userModel");
 const rooms = require("../services/rooms");
+const messages = require("../services/messages");
+const auth = require("../services/auth");
 const { validationResult } = require("express-validator");
-
-/* async function createRoom(name) {
-  const room = new Room({
-    name,
-  });
-  await room.save();
-  return room;
-} */
-
-/* async function findByName(name) {
-  const room = await Room.findOne({ name }).exec();
-  return room;
-} */
 
 async function createRoom(req, res) {
   //validate user token
@@ -60,13 +50,9 @@ async function postMessage(req, res) {
   const message = req.body.message; //message
   const room_name = req.params.room;
   const room = await Room.findOne({ name: room_name }).exec();
-  const login = await authControllers.decodeToken(token)["login"];
+  const login = await auth.decodeToken(token)["login"];
   const author = await User.findOne({ login }).exec(); //user (object)
-  const new_message = await messageControllers.createMessage(
-    author,
-    room,
-    message
-  );
+  const new_message = await messages.createMessage(author, room, message);
   room.messages.push(new_message._id);
   await room.save();
   return res.json(new_message);
