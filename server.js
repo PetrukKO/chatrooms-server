@@ -17,5 +17,5 @@ server.listen(PORT, () => {
   console.log(`listening ${PORT}`);
   mongoose
     .connect(process.env.CONNECTION_STRING)
-    .catch((err) => console.log("DB connection error"));
+    .catch((err) => console.log(err));
 });
