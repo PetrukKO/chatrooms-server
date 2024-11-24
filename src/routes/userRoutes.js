@@ -9,6 +9,7 @@ router.post("/create", validators.validateUser(), userControllers.newUser);
 
 router.get("/find", userControllers.findUser);
 
+//sets new color to user
 router.patch(
   "/color",
   authMiddleware.verifyToken,

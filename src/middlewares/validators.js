@@ -1,7 +1,5 @@
 const { body } = require("express-validator");
 const dotenv = require("dotenv");
-const jwt = require("jsonwebtoken");
-const authControllers = require("../controllers/authControllers");
 dotenv.config({ path: ".../config.env" });
 
 function validateUser() {
