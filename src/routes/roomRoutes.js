@@ -14,6 +14,9 @@ router.post(
 //find room by name
 router.get("/find", roomControllers.findRoom);
 
+//get all rooms
+router.get("/", roomControllers.getRooms);
+
 //gets all messages from room
 router.get("/:room", authMiddleware.verifyToken, roomControllers.getMessages);
 

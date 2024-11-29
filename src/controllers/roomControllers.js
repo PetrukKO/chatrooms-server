@@ -33,6 +33,15 @@ async function findRoom(req, res) {
   return res.json(found);
 }
 
+async function getRooms(req, res) {
+  console.log("find all rooms");
+  const found = await Room.find().exec();
+  if (!found) {
+    return res.json("Rooms not found");
+  }
+  return res.json(found);
+}
+
 async function getMessages(req, res) {
   const room = await Room.findOne({ name: req.params.room }).exec();
   if (!room) {
@@ -82,6 +91,7 @@ async function getNMessages(req, res) {
 module.exports = {
   createRoom,
   findRoom,
+  getRooms,
   getMessages,
   postMessage,
   getNMessages,
