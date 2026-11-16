@@ -4,6 +4,7 @@ const authRoutes = require("./routes/authRoutes");
 const roomRoutes = require("./routes/roomRoutes");
 const app = express();
 const cors = require("cors");
+const { notFound, errorHandler } = require("./middlewares/errorHandler");
 app.use(cors());
 app.use(express.json());
 
@@ -14,5 +15,8 @@ app.use("/rooms", roomRoutes);
 app.get("/", (req, res) => {
   res.send("))");
 });
+
+app.use(notFound);
+app.use(errorHandler);
 
 module.exports = app;

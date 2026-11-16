@@ -1,13 +1,13 @@
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 
+// bcrypt generates a new random salt for every password when given a number
+// of rounds; the salt is stored inside the hash, so bcrypt.compare still works
+// for hashes created earlier with the old fixed salt.
+const SALT_ROUNDS = 10;
+
 async function hashPassword(password) {
-  const hashed_password = await bcrypt
-    .hash(password, process.env.HASH)
-    .then((res) => {
-      return res;
-    });
-  return hashed_password;
+  return bcrypt.hash(password, SALT_ROUNDS);
 }
 
 async function createUser(login, password) {
@@ -17,7 +17,10 @@ async function createUser(login, password) {
     password: hashed_password,
   });
   await user.save();
-  return user;
+  // don't send the password hash back to the client
+  const result = user.toObject();
+  delete result.password;
+  return result;
 }
 
 async function findByLogin(login) {

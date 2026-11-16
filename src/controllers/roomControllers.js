@@ -34,7 +34,6 @@ async function findRoom(req, res) {
 }
 
 async function getRooms(req, res) {
-  console.log("find all rooms");
   const found = await Room.find().exec();
   if (!found) {
     return res.json("Rooms not found");
@@ -48,19 +47,31 @@ async function getMessages(req, res) {
     return res.json(req.params.room + " Room doesn't exist");
   }
   const messages = await Message.find({ room: room._id })
-    .populate("author", "login")
+    .populate("author", "login color")
     .exec();
   return res.json(messages);
 }
 
 //post message in room
 async function postMessage(req, res) {
-  const token = req.body.token;
-  const message = req.body.message; //message
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json(errors);
+  }
+  const token = req.headers.token;
+  const message = req.body.message; //message (already trimmed by validator)
   const room_name = req.params.room;
   const room = await Room.findOne({ name: room_name }).exec();
-  const login = await auth.decodeToken(token)["login"];
-  const author = await User.findOne({ login }).exec(); //user (object)
+  if (!room) {
+    return res.status(404).json(room_name + " Room doesn't exist");
+  }
+  const payload = auth.decodeToken(token);
+  const author = payload
+    ? await User.findOne({ login: payload.login }).exec() //user (object)
+    : null;
+  if (!author) {
+    return res.status(401).json("User not found");
+  }
   const new_message = await messages.createMessage(author, room, message);
   room.messages.push(new_message._id);
   await room.save();
@@ -68,7 +79,7 @@ async function postMessage(req, res) {
 }
 
 async function getNMessages(req, res) {
-  const token = req.body.token;
+  const token = req.headers.token;
   const N = 15;
   const page = req.params.page;
   const room = await Room.findOne({ name: req.params.room }).exec();

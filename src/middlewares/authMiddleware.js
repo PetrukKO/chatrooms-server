@@ -1,10 +1,10 @@
-const { body } = require("express-validator");
+const { body, header } = require("express-validator");
 const dotenv = require("dotenv");
 const jwt = require("jsonwebtoken");
 dotenv.config({ path: ".../config.env" });
 
 const verifyToken = async function (req, res, next) {
-  const token = req.body.token;
+  const token = req.headers.token;
   try {
     jwt.verify(token, process.env.SECRET);
     next();

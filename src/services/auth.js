@@ -45,4 +45,4 @@ async function authorize(login, password) {
   throw "Incorrect login or password";
 }
 
-module.exports = { authorize, decodeToken };
+module.exports = { authorize, decodeToken, comparePassword };

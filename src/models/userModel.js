@@ -2,11 +2,12 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
   login: {
     type: String,
-    require: true,
+    required: true,
+    unique: true,
   },
   password: {
     type: String,
-    require: true,
+    required: true,
   },
   color: { type: String, default: "#000000" },
   room: { type: mongoose.Schema.Types.ObjectId, ref: "Room" },

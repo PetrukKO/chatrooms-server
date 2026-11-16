@@ -31,12 +31,30 @@ function validateRoom() {
   ];
 }
 
+const MAX_MESSAGE_LENGTH = 1000;
+
 function validateMessage() {
-  return [body("")];
+  return [
+    body("message")
+      .isString()
+      .withMessage("Message must be a string")
+      .bail()
+      .trim()
+      .notEmpty()
+      .withMessage("Message is empty")
+      .isLength({ max: MAX_MESSAGE_LENGTH })
+      .withMessage(`Message must be at most ${MAX_MESSAGE_LENGTH} symbols`),
+  ];
 }
 
 function validateColor() {
   return [body("color").isHexColor().withMessage("Invalid color")];
 }
 
-module.exports = { validateUser, validateRoom, validateColor };
+module.exports = {
+  validateUser,
+  validateRoom,
+  validateMessage,
+  validateColor,
+  MAX_MESSAGE_LENGTH,
+};
